@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="light" />
+<title>Nahuel® → Desarrollador</title>
+<meta name="description" content="Nahuel — Desarrollador full-stack en Paraguay. Desarrollo web, diseño, edición de video y contabilidad." />
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+
+<style>
+  :root{
+    --orange:#1E73E8; /* azul francia */
+    --ink:#0A0A0A;
+    --white:#FFFFFF;
+    --blue:#2B6BFF;
+    --display:"Archivo", system-ui, sans-serif;
+    --mono:"JetBrains Mono", ui-monospace, monospace;
+    --maxw:1280px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{background:var(--orange);}
+  body{
+    background:var(--orange);
+    color:var(--ink);
+    font-family:var(--display);
+    font-weight:600;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+    cursor:auto;
+  }
+  ::selection{background:var(--ink);color:var(--orange);}
+  a{color:inherit;text-decoration:none;}
+  .wrap{max-width:var(--maxw);margin:0 auto;padding:0 26px;}
+  .uc{text-transform:uppercase;}
+
+  /* custom cursor (desktop) */
+  .cursor{position:fixed;top:0;left:0;width:16px;height:16px;border-radius:50%;background:var(--ink);
+    pointer-events:none;z-index:9999;mix-blend-mode:difference;transform:translate(-50%,-50%);
+    transition:width .22s ease,height .22s ease;will-change:transform;}
+  .cursor.big{width:64px;height:64px;}
+  @media(pointer:coarse){.cursor{display:none;}}
+
+  /* loading */
+  .loader{position:fixed;inset:0;z-index:10000;background:var(--ink);color:var(--orange);
+    display:flex;align-items:flex-end;justify-content:space-between;padding:34px 30px;
+    transition:transform .8s cubic-bezier(.76,0,.24,1);}
+  .loader.done{transform:translateY(-101%);}
+  .loader .lbl{font-family:var(--display);font-weight:900;font-size:clamp(40px,9vw,90px);letter-spacing:-.03em;line-height:.85;}
+  .loader .count{font-family:var(--mono);font-size:clamp(40px,9vw,90px);font-weight:600;}
+
+  /* fixed nav */
+  .nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;
+    padding:20px 26px;font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;
+    mix-blend-mode:difference;color:#fff;}
+  .nav a:hover{opacity:.6;}
+  .nav .mid{display:none;}
+  @media(min-width:760px){.nav .mid{display:block;}}
+
+  /* HERO */
+  .hero{min-height:100svh;position:relative;display:flex;flex-direction:column;justify-content:space-between;
+    padding:120px 26px 150px;overflow:hidden;}
+  .kicker{font-family:var(--display);font-weight:800;text-transform:uppercase;letter-spacing:-.01em;
+    font-size:clamp(26px,5.5vw,68px);line-height:.95;display:flex;flex-wrap:wrap;align-items:center;gap:0 .28em;}
+  .avatar{width:clamp(34px,5.5vw,68px);height:clamp(34px,5.5vw,68px);border-radius:50%;background:var(--ink);
+    color:var(--orange);display:inline-flex;align-items:center;justify-content:center;font-weight:900;
+    font-size:.55em;flex:none;}
+  .reg{font-size:.5em;vertical-align:super;font-weight:800;}
+
+  .disciplines{display:flex;flex-direction:column;gap:clamp(20px,3vw,46px);}
+  .bigline{display:flex;align-items:center;gap:clamp(16px,2vw,34px);cursor:default;}
+  .bigline::before{content:"";flex:none;width:clamp(13px,1.5vw,26px);height:clamp(13px,1.5vw,26px);
+    border-radius:50%;background:var(--ink);transition:transform .35s cubic-bezier(.2,.8,.2,1);}
+  .bigline h2{font-family:var(--display);font-weight:900;text-transform:uppercase;
+    font-size:clamp(28px,6.6vw,90px);line-height:.92;letter-spacing:-.03em;transform-origin:left center;
+    transition:transform .35s cubic-bezier(.2,.8,.2,1),letter-spacing .35s ease;}
+  .bigline:hover h2{transform:scale(1.06);letter-spacing:-.02em;}
+  .bigline:hover::before{transform:scale(1.4);}
+
+  .hero-cta{font-family:var(--display);font-weight:900;text-transform:uppercase;white-space:nowrap;
+    font-size:clamp(44px,12vw,168px);line-height:.82;letter-spacing:-.04em;align-self:flex-start;
+    display:inline-block;transition:opacity .25s,transform .35s cubic-bezier(.2,.8,.2,1);transform-origin:left center;}
+  .hero-cta:hover{opacity:.6;transform:scale(1.03);}
+
+  .hero-foot{position:absolute;left:0;right:0;bottom:0;display:flex;justify-content:space-between;flex-wrap:wrap;gap:12px 20px;
+    padding:18px 26px;font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+  .hero-foot .col span{display:block;}
+  .hero-foot a:hover{opacity:.6;}
+  .dotblue{display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--white);vertical-align:middle;}
+
+  /* marquee */
+  .marquee{background:var(--ink);color:var(--orange);overflow:hidden;padding:18px 0;border-top:3px solid var(--ink);}
+  .mq-track{display:flex;width:max-content;gap:0;animation:mq 26s linear infinite;}
+  .mq-track.rev{animation-direction:reverse;}
+  .mq-track span{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(28px,5vw,64px);
+    letter-spacing:-.02em;padding:0 .35em;white-space:nowrap;}
+  .mq-track .star{color:var(--white);}
+  @keyframes mq{to{transform:translateX(-50%);}}
+
+  /* sections on white */
+  .section{padding:clamp(70px,11vw,150px) 0;}
+  .eyebrow{font-family:var(--mono);font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;}
+  .huge{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.85;letter-spacing:-.04em;
+    font-size:clamp(48px,11vw,150px);margin-top:18px;}
+  .about-p{font-size:clamp(18px,2.4vw,26px);font-weight:600;max-width:760px;margin-top:34px;line-height:1.45;}
+  .about-p b{background:var(--orange);padding:0 .1em;}
+
+  /* work / gallery */
+  .work-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:16px;margin-bottom:34px;}
+  .drag-hint{font-family:var(--mono);font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;}
+  .gallery{display:flex;gap:22px;overflow-x:auto;padding:6px 26px 30px;cursor:grab;
+    scrollbar-width:none;-ms-overflow-style:none;scroll-snap-type:x proximity;}
+  .gallery::-webkit-scrollbar{display:none;}
+  .gallery.drag{cursor:grabbing;}
+  .panel{flex:0 0 min(86vw,560px);scroll-snap-align:center;user-select:none;}
+  .cover{border:3px solid var(--ink);overflow:hidden;}
+  .cover-bar{display:flex;align-items:center;gap:7px;padding:11px 14px;}
+  .cover-bar .d{width:11px;height:11px;border-radius:50%;background:rgba(255,255,255,.5);}
+  .cover-url{font-family:var(--mono);font-size:11px;margin-left:8px;padding:4px 11px;border-radius:6px;background:rgba(255,255,255,.16);color:rgba(255,255,255,.9);}
+  .cover-view{aspect-ratio:16/10;padding:24px;display:flex;flex-direction:column;justify-content:center;gap:16px;}
+  .cover.nbl{background:linear-gradient(140deg,#061A3A,#0B2C63 55%,#1E7AF5 130%);}
+  .cover.nbl .cb{font-family:var(--display);font-weight:900;font-size:24px;color:#fff;}
+  .cover.nbl .cb i{color:#4F99FF;font-style:normal;}
+  .nbl-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+  .nbl-cards div{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);border-radius:9px;padding:10px;}
+  .nbl-cards small{font-family:var(--mono);font-size:9.5px;color:#9DC3FF;display:block;}
+  .nbl-cards b{font-family:var(--mono);font-size:12px;color:#fff;display:block;margin-top:5px;}
+  .cover.rmy{background:linear-gradient(140deg,#3A1320,#7E3A52 55%,#D8A0B0 130%);}
+  .cover.rmy .cb{font-family:var(--display);font-weight:900;font-size:22px;color:#fff;letter-spacing:.05em;}
+  .cover.rmy .cb small{display:block;font-family:var(--mono);font-weight:500;font-size:9px;letter-spacing:.3em;color:#F3C9D4;margin-top:3px;}
+  .rmy-chips{display:flex;flex-wrap:wrap;gap:7px;}
+  .rmy-chips span{font-family:var(--mono);font-size:10.5px;color:#fff;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.24);border-radius:100px;padding:6px 11px;}
+  .cover.more{background:var(--orange);display:flex;align-items:center;justify-content:center;}
+  .cover.more span{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:34px;text-align:center;line-height:.9;}
+  .panel-meta{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:16px;flex-wrap:wrap;}
+  .panel-meta h3{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(24px,3vw,34px);letter-spacing:-.02em;}
+  .panel-meta .go{font-family:var(--mono);font-size:12px;font-weight:600;text-transform:uppercase;}
+  .panel-tags{font-family:var(--mono);font-size:12px;margin-top:6px;opacity:.7;}
+
+  /* services */
+  .services{display:grid;grid-template-columns:repeat(3,1fr);margin-top:40px;border-top:3px solid var(--ink);}
+  .srv{padding:30px 24px 34px;border-right:3px solid var(--ink);}
+  .srv:last-child{border-right:none;}
+  .srv-n{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--orange);}
+  .srv h3{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(21px,2.3vw,29px);letter-spacing:-.02em;margin:14px 0 12px;line-height:.95;}
+  .srv p{font-size:15.5px;line-height:1.5;}
+  .srv a{display:inline-block;margin-top:18px;font-family:var(--mono);font-size:13px;font-weight:600;text-transform:uppercase;color:var(--orange);}
+  .srv a:hover{opacity:.6;}
+  @media(max-width:760px){.services{grid-template-columns:1fr;}.srv{border-right:none;border-bottom:3px solid var(--ink);}.srv:last-child{border-bottom:none;}}
+
+  /* instagram */
+  .ig-embed{border:3px solid var(--ink);min-height:clamp(300px,42vw,460px);display:flex;align-items:center;justify-content:center;padding:40px;text-align:center;}
+  .ig-cta{font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(22px,4vw,46px);letter-spacing:-.02em;line-height:.95;}
+  .ig-cta:hover{color:var(--orange);}
+
+  /* contact bookend (orange) */
+  .contact{background:var(--orange);color:var(--ink);padding:clamp(80px,13vw,170px) 0;text-align:center;}
+  .contact .huge{margin-top:8px;}
+  .contact-links{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 30px;margin-top:44px;
+    font-family:var(--mono);font-size:14px;font-weight:600;text-transform:uppercase;}
+  .contact-links a{border-bottom:2px solid var(--ink);padding-bottom:3px;}
+  .contact-links a:hover{opacity:.6;}
+  .talk{display:inline-block;margin-top:46px;font-family:var(--display);font-weight:900;text-transform:uppercase;
+    font-size:clamp(30px,6vw,80px);letter-spacing:-.03em;}
+
+  footer{background:var(--ink);color:var(--orange);padding:26px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
+    font-family:var(--mono);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;}
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;}
+    .loader{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" aria-hidden="true"></div>
+
+<div class="loader" id="loader">
+  <div class="lbl">Nahuel<span class="reg">®</span></div>
+  <div class="count" id="count">000</div>
+</div>
+
+<nav class="nav">
+  <a href="#top">Nahuel®</a>
+  <span class="mid">Paraguay — '26</span>
+  <a href="#contacto">→ Hablemos ←</a>
+</nav>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="kicker uc">
+      <span>Hola, bienvenido</span>
+      <span class="avatar">N</span>
+      <span>a casa — soy Nahuel<span class="reg">®</span></span>
+    </div>
+
+    <div class="disciplines">
+      <div class="bigline">
+        <h2>Contabilidad</h2>
+      </div>
+      <div class="bigline">
+        <h2>Creación de contenidos</h2>
+      </div>
+      <div class="bigline">
+        <h2>Páginas web</h2>
+      </div>
+    </div>
+
+    <a class="hero-cta uc" href="#contacto" data-hover>→ Hablemos ←</a>
+
+    <div class="hero-foot">
+      <div class="col"><span>Nahuel — 26</span><span>© 2026</span></div>
+      <div class="col"><a href="https://github.com/nahuelbja" target="_blank" rel="noopener">GitHub</a><span>nahuelbja</span></div>
+      <div class="col"><a href="https://instagram.com/nahuelbja" target="_blank" rel="noopener">Instagram</a><span>@nahuelbja</span></div>
+      <div class="col"><a href="mailto:nahuelb988@gmail.com">nahuelb988@gmail.com</a><span>Disponible</span></div>
+      <div class="col"><a href="#contacto">→ Hablemos ←</a></div>
+    </div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee" aria-hidden="true">
+    <div class="mq-track">
+      <span>Contabilidad <b class="star">✦</b> Edición de video <b class="star">✦</b> Páginas web <b class="star">✦</b> Creación de contenido <b class="star">✦</b></span>
+      <span>Contabilidad <b class="star">✦</b> Edición de video <b class="star">✦</b> Páginas web <b class="star">✦</b> Creación de contenido <b class="star">✦</b></span>
+    </div>
+  </div>
+
+  <!-- ABOUT -->
+  <section class="section" id="sobre-mi">
+    <div class="wrap">
+      <p class="eyebrow">(00) Sobre mí</p>
+      <h2 class="huge">Tres frentes,<br>bien hechos.</h2>
+      <p class="about-p">Combino tres frentes que normalmente van por separado: <b>contabilidad</b>,
+        <b>edición de videos / creación de contenidos</b> y <b>páginas web</b> a medida.
+        Ordeno los números, cuento la historia y la pongo online.</p>
+    </div>
+  </section>
+
+  <!-- SERVICIOS -->
+  <section class="section" id="servicios" style="padding-top:0">
+    <div class="wrap">
+      <p class="eyebrow">(01) Qué hago</p>
+      <h2 class="huge">Servicios</h2>
+      <div class="services">
+        <div class="srv">
+          <span class="srv-n">01</span>
+          <h3>Contabilidad</h3>
+          <p>Llevo tus obligaciones tributarias al día: IVA, IRE Simple, IRP, apertura y gestión de RUC. Lo fiscal paraguayo, ordenado y sin sorpresas.</p>
+          <a href="https://naberol-v2.vercel.app" target="_blank" rel="noopener" data-hover>Ver naberol. ↗</a>
+        </div>
+        <div class="srv">
+          <span class="srv-n">02</span>
+          <h3>Creación de contenidos</h3>
+          <p>Guionizo, edito y produzco contenido: del principio a fin. Montajes, ritmo y cortes pensados para redes, cuidando siempre la marca.</p>
+          <a href="https://instagram.com/nahuelbja" target="_blank" rel="noopener" data-hover>Ver en Instagram ↗</a>
+        </div>
+        <div class="srv">
+          <span class="srv-n">03</span>
+          <h3>Páginas web</h3>
+          <p>Diseño y desarrollo páginas y apps a medida, de la idea al deploy. React, Next.js, Supabase y Vercel.</p>
+          <a href="https://romy-ramos-makeup.vercel.app" target="_blank" rel="noopener" data-hover>Ver un ejemplo ↗</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WORK -->
+  <section class="section" id="trabajo" style="padding-bottom:clamp(50px,8vw,90px)">
+    <div class="wrap work-head">
+      <div>
+        <p class="eyebrow">(02) Trabajo</p>
+        <h2 class="huge">Seleccionado</h2>
+      </div>
+      <span class="drag-hint">Arrastrá →</span>
+    </div>
+
+    <div class="gallery" id="gallery">
+      <!-- naberol -->
+      <a class="panel" href="https://naberol-v2.vercel.app" target="_blank" rel="noopener" data-hover>
+        <div class="cover nbl">
+          <div class="cover-bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="cover-url">naberol-v2.vercel.app</span></div>
+          <div class="cover-view">
+            <div class="cb">naberol<i>.</i></div>
+            <div class="nbl-cards">
+              <div><small>IVA 10%</small><b>₲ 1.240.000</b></div>
+              <div><small>IVA 5%</small><b>₲ 312.500</b></div>
+              <div><small>Exenta</small><b>₲ 480.000</b></div>
+            </div>
+          </div>
+        </div>
+        <div class="panel-meta"><h3>naberol.</h3><span class="go">Ver en vivo ↗</span></div>
+        <p class="panel-tags">Facturación + contabilidad · React · Supabase · Vercel</p>
+      </a>
+
+      <!-- Romy -->
+      <a class="panel" href="https://romy-ramos-makeup.vercel.app" target="_blank" rel="noopener" data-hover>
+        <div class="cover rmy">
+          <div class="cover-bar"><span class="d"></span><span class="d"></span><span class="d"></span><span class="cover-url">romy-ramos-makeup.vercel.app</span></div>
+          <div class="cover-view">
+            <div class="cb">ROMY RAMOS<small>MAKEUP</small></div>
+            <div class="rmy-chips"><span>Social · ₲280.000</span><span>Glam · ₲330.000</span><span>Novia · ₲850.000</span></div>
+          </div>
+        </div>
+        <div class="panel-meta"><h3>Romy Ramos</h3><span class="go">Ver en vivo ↗</span></div>
+        <p class="panel-tags">Sitio + calculadora de presupuesto · Next.js · React</p>
+      </a>
+
+      <!-- more -->
+      <a class="panel" href="https://github.com/nahuelbja" target="_blank" rel="noopener" data-hover>
+        <div class="cover more">
+          <div class="cover-view" style="align-items:center;justify-content:center"><span>Más<br>en<br>GitHub →</span></div>
+        </div>
+        <div class="panel-meta"><h3>+ Proyectos</h3><span class="go">github.com/nahuelbja ↗</span></div>
+        <p class="panel-tags">Código, experimentos y más</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- MARQUEE 2 -->
+  <div class="marquee" aria-hidden="true">
+    <div class="mq-track rev">
+      <span>React <b class="star">✦</b> Next.js <b class="star">✦</b> Supabase <b class="star">✦</b> Vercel <b class="star">✦</b> JavaScript <b class="star">✦</b> Git <b class="star">✦</b></span>
+      <span>React <b class="star">✦</b> Next.js <b class="star">✦</b> Supabase <b class="star">✦</b> Vercel <b class="star">✦</b> JavaScript <b class="star">✦</b> Git <b class="star">✦</b></span>
+    </div>
+  </div>
+
+  <!-- INSTAGRAM -->
+  <section class="section" id="instagram" style="padding-top:clamp(40px,7vw,80px)">
+    <div class="wrap work-head">
+      <div>
+        <p class="eyebrow">(03) Instagram</p>
+        <h2 class="huge">En video</h2>
+      </div>
+      <a class="drag-hint" href="https://instagram.com/nahuelbja" target="_blank" rel="noopener" data-hover>@nahuelbja →</a>
+    </div>
+    <div class="wrap">
+      <behold-widget feed-id="qK4rmMN1SkjiXO6MGmqi"></behold-widget>
+      <div style="text-align:center;margin-top:36px">
+        <a class="ig-cta" href="https://instagram.com/nahuelbja" target="_blank" rel="noopener" data-hover>→ Ver más en Instagram ←</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT -->
+  <section class="contact" id="contacto">
+    <div class="wrap">
+      <p class="eyebrow">(04) Contacto</p>
+      <h2 class="huge">¿Hablamos?</h2>
+      <div class="contact-links">
+        <a href="mailto:nahuelb988@gmail.com">nahuelb988@gmail.com</a>
+        <a href="https://github.com/nahuelbja" target="_blank" rel="noopener">GitHub</a>
+        <a href="https://instagram.com/nahuelbja" target="_blank" rel="noopener">Instagram</a>
+        <span>Paraguay</span>
+      </div>
+      <a class="talk" href="mailto:nahuelb988@gmail.com" data-hover>→ Escribime ←</a>
+    </div>
+  </section>
+
+  <footer>
+    <span>Nahuel® — '26</span>
+    <span>Hecho a mano · Paraguay</span>
+    <span>© 2026</span>
+  </footer>
+
+</main>
+
+<script>
+  // custom cursor
+  (function(){
+    if(window.matchMedia('(pointer:coarse)').matches) return;
+    var c=document.querySelector('.cursor'),mx=0,my=0,cx=0,cy=0;
+    window.addEventListener('pointermove',function(e){mx=e.clientX;my=e.clientY;});
+    (function loop(){cx+=(mx-cx)*0.22;cy+=(my-cy)*0.22;c.style.transform='translate('+cx+'px,'+cy+'px) translate(-50%,-50%)';requestAnimationFrame(loop);})();
+    document.querySelectorAll('a,[data-hover]').forEach(function(el){
+      el.addEventListener('pointerenter',function(){c.classList.add('big');});
+      el.addEventListener('pointerleave',function(){c.classList.remove('big');});
+    });
+  })();
+
+  // loading counter
+  (function(){
+    var loader=document.getElementById('loader');
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){ if(loader) loader.style.display='none'; return; }
+    var el=document.getElementById('count'),n=0;
+    var t=setInterval(function(){
+      n+=Math.ceil(Math.random()*11);
+      if(n>=100){n=100;clearInterval(t);el.textContent='100';setTimeout(function(){loader.classList.add('done');},350);}
+      else{el.textContent=('00'+n).slice(-3);}
+    },80);
+  })();
+
+  // scroll: orange -> white background
+  (function(){
+    var from=[30,115,232], to=[255,255,255];
+    function onScroll(){
+      var h=window.innerHeight*0.85;
+      var t=Math.min(Math.max(window.scrollY/h,0),1);
+      var r=Math.round(from[0]+(to[0]-from[0])*t);
+      var g=Math.round(from[1]+(to[1]-from[1])*t);
+      var b=Math.round(from[2]+(to[2]-from[2])*t);
+      document.body.style.backgroundColor='rgb('+r+','+g+','+b+')';
+    }
+    window.addEventListener('scroll',onScroll,{passive:true});
+    onScroll();
+  })();
+
+  // drag-to-scroll gallery
+  (function(){
+    var g=document.getElementById('gallery');
+    if(!g) return;
+    var down=false,startX=0,startScroll=0,moved=false;
+    g.addEventListener('pointerdown',function(e){down=true;moved=false;startX=e.clientX;startScroll=g.scrollLeft;g.classList.add('drag');});
+    window.addEventListener('pointerup',function(){down=false;g.classList.remove('drag');});
+    window.addEventListener('pointermove',function(e){
+      if(!down)return;
+      var dx=e.clientX-startX;
+      if(Math.abs(dx)>5)moved=true;
+      g.scrollLeft=startScroll-dx;
+    });
+    // prevent click navigation right after a drag
+    g.querySelectorAll('a').forEach(function(a){
+      a.addEventListener('click',function(e){ if(moved){e.preventDefault();} });
+    });
+  })();
+</script>
+
+<script type="module" src="https://w.behold.so/widget.js"></script>
+
+</body>
+</html>
